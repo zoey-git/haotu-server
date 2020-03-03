@@ -1,10 +1,7 @@
 const KoaRouter = require('koa-router')
 const router = new KoaRouter()
+const { crawler } = require('../controller/crawler')
 
-router.get('/', async (ctx, next) => {
-    return ctx.body = {
-        code: 200
-    }
-})
+router.get('/', crawler)
 
 module.exports = router.routes()
