@@ -14,6 +14,20 @@ const crawler = async (ctx, next) => {
         
     }
 }
+const saveImg = (imgUrl, filePath) => {
+    return new Promise((resolve, reject) => {
+        var readStream = request.get({
+            url: imgUrl,
+            headers: { 'Referer': 'http://www.mzitu.com/' }
+        })
+        var writeStream = fs.createWriteStream(filePath)
+        readStream.pipe(writeStream);
+        writeStream.on('finish', function () {
+            resolve('ok')
+            writeStream.end();
+        })
+    })
+}
 
 const crawlerFn = () => {
     return new Promise((resolve, reject) => {
@@ -28,14 +42,14 @@ const crawlerFn = () => {
                     reject(err)
                 }
                 const $ = cheerio.load(res.text)
-                $('.main-content .postlist #pins li').each((index, element) => {
+                $('.main-content .postlist #pins li').each(async (index, element) => {
                     const $element = $(element)
-                    request.head($element.children('a').children('img').attr('data-original'), (err, res, body) => {
-                        request($element.children('a').children('img').attr('data-original')).pipe(fs.createWriteStream('./images', '/', Math.floor(Math.random()*100000)))
-                    })
+                    let imgUrl = $element.children('a').children('img').attr('data-original')
+                    const filePath = path.resolve(__dirname, '../static/images', `${$element.text()}_image.png`)
+                    await saveImg(imgUrl, filePath)
                     items.push({
                         "title": $element.text(),
-                        "href": $element.children('a').children('img').attr('data-original')
+                        "href": imgUrl
                     })
                 })
                 resolve(items)
