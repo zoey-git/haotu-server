@@ -64,7 +64,7 @@ const saveImg = (imgUrl, filePath, fileName) => {
 const crawlerFn = () => {
     return new Promise((resolve, reject) => {
         const items = []
-        superagent.get('https://www.mzitu.com/')
+        superagent.get('https://500px.com')
             .set({
                 'Referrer': 'www.baidu.com',
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
@@ -74,15 +74,21 @@ const crawlerFn = () => {
                     reject(err)
                 }
                 const $ = cheerio.load(res.text)
-                $('.main-content .postlist #pins li').each(async (index, element) => {
+                console.log(res.text);
+                
+                $('.StyledLayout__Row-b9gazd-1').each(async (index, element) => {
+                    
+                    
+                    console.log(123);
                     const $element = $(element)
-                    let imgUrl = $element.children('a').children('img').attr('data-original')
-                    const filePath = path.resolve(__dirname, '../static/images', `${$element.text()}_image.png`)
-                    await saveImg(imgUrl, filePath, `${$element.text()}_image.png`)
-                    items.push({
-                        "title": $element.text(),
-                        "href": imgUrl
-                    })
+                    let imgUrl = $element.children('.photo_link').children('img').attr('src')
+                    
+                    // const filePath = path.resolve(__dirname, '../static/images', `${$element.text()}_image.png`)
+                    // await saveImg(imgUrl, filePath, `${$element.text()}_image.png`)
+                    // items.push({
+                    //     "title": $element.text(),
+                    //     "href": imgUrl
+                    // })
                 })
                 resolve(items)
             })
