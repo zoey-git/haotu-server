@@ -5,6 +5,9 @@ const jwt = require('jsonwebtoken')
 
 const AddUser = async (ctx, next) => {
     const { username, password, email } = ctx.request.body
+    console.log(ctx.request.body);
+    
+    return
     if (!username || !password || !email) {
         return ctx.body = {
             code: 301,
