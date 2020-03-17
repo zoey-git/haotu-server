@@ -118,8 +118,18 @@ const ChangeUserPassword = async (ctx, next) => {
     
 }
 
+const GetUserList = async (ctx, next) => {
+    let res = await UserModel.find({})
+    console.log(res);
+    
+    return ctx.body = {
+        code: 200
+    }
+}
+
 module.exports = {
     AddUser,
     Login,
-    ChangeUserPassword
+    ChangeUserPassword,
+    GetUserList
 }
