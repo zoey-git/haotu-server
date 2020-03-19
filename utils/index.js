@@ -19,6 +19,19 @@ const verifyToken = (token) => {
     })
 }
 
+const validateParams = (ctx, next, [...params]) => {
+    return new Promise((resolve, reject) => {
+        let arr = params.filter((item) => {
+            return ['', undefined, null].includes(item)
+        })
+        if(arr.length) {
+            return reject()
+        }
+        resolve()
+    })
+}
+
 module.exports = {
-    verifyToken
+    verifyToken,
+    validateParams
 }

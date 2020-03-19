@@ -1,27 +1,28 @@
 const UserModel = require('../../model/user')
 const { TOKEN_KEY } = require('../../config')
-const { verifyToken } = require('../../utils')
+const { verifyToken, validateParams } = require('../../utils')
 const jwt = require('jsonwebtoken')
 
 const AddUser = async (ctx, next) => {
-    const { username, password, email } = ctx.request.body
-    console.log(ctx.request.body);
-    
-    return
-    if (!username || !password || !email) {
+    const { username, password, email, nickname } = ctx.request.body
+    try {
+        await validateParams(ctx, next, [username, password, email, nickname])
+    } catch (error) {
         return ctx.body = {
             code: 301,
             msg: 'params is not full'
         }
     }
+
     const user = new UserModel({
         username: username,
         password: password,
+        nickname: nickname,
         email: email
     })
+
     try {
         let res = await user.save()
-        console.log(res);
         if(res._id) {
             return ctx.body = {
                 code: 200,
@@ -120,8 +121,15 @@ const ChangeUserPassword = async (ctx, next) => {
 
 const GetUserList = async (ctx, next) => {
     let res = await UserModel.find({})
-    console.log(res);
-    
+    return ctx.body = {
+        code: 200,
+        data: res
+    }
+}
+
+const EditUser = async (ctx, next) => {
+    const { nickname, _id } = ctx.request.body
+    await UserModel.updateOne({ _id }, { nickname })
     return ctx.body = {
         code: 200
     }
@@ -131,5 +139,6 @@ module.exports = {
     AddUser,
     Login,
     ChangeUserPassword,
-    GetUserList
+    GetUserList,
+    EditUser
 }
