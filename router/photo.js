@@ -1,7 +1,7 @@
 const KoaRouter = require('koa-router')
 const router = new KoaRouter()
-const { PhotoList, SetPhotos } = require('../controller/photo')
-router.post('/photo_list', PhotoList)
-router.post('/set_photos', SetPhotos)
+const { GetPhotoList, UpdatePhoto } = require('../controller/photo')
+router.post('/get_photo_list', GetPhotoList)
+router.post('/update_photo', UpdatePhoto)
 
 module.exports = router.routes()
